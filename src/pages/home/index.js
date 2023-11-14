@@ -20,6 +20,7 @@ import {DatePicker} from "@mui/lab";
 import CustomInput from "../../views/components/CustomInput";
 import {useTheme} from "@mui/material/styles";
 import ListItem from "@mui/material/ListItem";
+import ContractStickyTable from "../../views/components/tables/ContractStickyTable";
 
 const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -148,15 +149,19 @@ const Home = () => {
                   <ListItemText primary='By Contract Status' />
                 </MenuItem>
               </Menu>
-              
+
             </CardContent>
           </Card>
         </Paper>
 
         <Paper sx={{mt:4}}>
-          <Card sx={{p:10}}>
-             <Typography align={'center'}>No Contracts to Show</Typography>
-          </Card>
+          {contracts.length === 0 ? <Card sx={{p: 10}}>
+            <Typography align={'center'}>No Contracts to Show</Typography>
+          </Card> :
+            <Card>
+            <CardHeader title='Contract List' />
+            <ContractStickyTable />
+            </Card>}
         </Paper>
       </Grid>
 

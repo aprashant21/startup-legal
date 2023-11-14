@@ -17,6 +17,10 @@ const navigation = () => {
         {
           title: 'Generate Contract',
           icon:'tabler:email'
+        },
+        {
+          title: 'Pending Contracts',
+          icon:'tabler:email'
         }
       ]
     }

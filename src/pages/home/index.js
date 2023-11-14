@@ -14,24 +14,42 @@ import {Icon} from "@iconify/react";
 import Menu from "@mui/material/Menu";
 import {useState} from "react";
 import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import {ListItemText} from "@mui/material";
+import {DatePicker} from "@mui/lab";
+import CustomInput from "../../views/components/CustomInput";
+import {useTheme} from "@mui/material/styles";
+import ListItem from "@mui/material/ListItem";
 
 const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorGroupBy, setAnchorGroupBy] = useState(null)
+  const [anchorFilter, setAnchorFilter] = useState(null)
+  const [dateFormat, setDateFormat] = useState(new Date())
 
-  const handleClick = event => {
+  const handleSortingMenuClick = event => {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleClose = () => {
+  const handleGroupByOpen = event => {
+    setAnchorGroupBy(event.currentTarget)
+  }
+
+  const handleFilterOpen = event => {
+    setAnchorFilter(event.currentTarget)
+  }
+
+  const handleSortingClose = () => {
     setAnchorEl(null)
   }
 
-  const sortingOptions = [
-    {
-      title:'Filter By Date',
+  const handleGroupByClose = () =>{
+    setAnchorGroupBy(null);
+  }
 
-    }
-  ]
+  const handleFilterClose = () =>{
+    setAnchorFilter(null);
+  }
 
   return (
     <Grid container spacing={6}>
@@ -62,15 +80,20 @@ const Home = () => {
             {/*</CardContent>*/}
 
             <CardContent>
-                <Box sx={{display:'flex', gap:2}}>
-                  <Button onClick={handleClick} variant={'contained'} startIcon={<Icon icon={'tabler:adjustments-horizontal'} /> }>Sorting</Button>
+                <Box sx={{display:'flex', gap:4}}>
+                  <Button onClick={handleSortingMenuClick} variant={'contained'} startIcon={<Icon icon={'tabler:arrows-sort'} /> }>Sorting</Button>
+                  <Button onClick={handleGroupByOpen} variant={'contained'} startIcon={<Icon icon={'tabler:box-multiple'} /> }>Group By</Button>
+                  <Button onClick={handleFilterOpen} variant={'contained'} startIcon={<Icon icon={'tabler:adjustments-alt'} /> }>Filtering</Button>
+
                 </Box>
+
+              {/*sorting menu*/}
               <Menu
                 keepMounted
                 elevation={0}
                 anchorEl={anchorEl}
                 id='customized-menu'
-                onClose={handleClose}
+                onClose={handleSortingClose}
                 open={Boolean(anchorEl)}
                 anchorOrigin={{
                   vertical: 'bottom',
@@ -82,17 +105,60 @@ const Home = () => {
                 }}
               >
                 <MenuItem>
-                  Hello WORD
+                  <ListItemIcon>
+                    <Icon icon='tabler:sort-ascending-2' fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText primary='Ascending' />
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <Icon icon='tabler:sort-descending-2' fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText primary='Descending' />
                 </MenuItem>
               </Menu>
-            </CardContent>
 
+              {/*Group By Menu*/}
+              <Menu
+                keepMounted
+                elevation={0}
+                anchorEl={anchorGroupBy}
+                id='customized-menu'
+                onClose={handleGroupByClose}
+                open={Boolean(anchorGroupBy)}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center'
+                }}
+              >
+                <MenuItem>
+                  <ListItemIcon>
+                    <Icon icon='tabler:calendar-due' fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText primary='By Date' />
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <Icon icon='tabler:brand-redux' fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText primary='By Contract Status' />
+                </MenuItem>
+              </Menu>
+              
+            </CardContent>
+          </Card>
+        </Paper>
+
+        <Paper sx={{mt:4}}>
+          <Card sx={{p:10}}>
+             <Typography align={'center'}>No Contracts to Show</Typography>
           </Card>
         </Paper>
       </Grid>
-
-
-
 
     </Grid>
   )

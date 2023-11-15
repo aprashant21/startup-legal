@@ -6,27 +6,44 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import CustomAutocomplete from "../../@core/components/mui/autocomplete";
 import {contracts} from "../../utils/contracts";
 import CustomTextField from "../../@core/components/mui/text-field";
 import Button from "@mui/material/Button";
 import {Icon} from "@iconify/react";
 import Menu from "@mui/material/Menu";
-import {useState} from "react";
+import {Fragment, useState} from "react";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {ListItemText} from "@mui/material";
-import {DatePicker} from "@mui/lab";
-import CustomInput from "../../views/components/CustomInput";
-import {useTheme} from "@mui/material/styles";
-import ListItem from "@mui/material/ListItem";
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle, FormControl, InputLabel,
+  ListItemText,
+  Select
+} from "@mui/material";
 import ContractStickyTable from "../../views/components/tables/ContractStickyTable";
+import {DatePicker, LocalizationProvider} from "@mui/lab";
+import CustomInput from "../../views/components/CustomInput";
+import {addDays} from "date-fns";
+import {useTheme} from "@mui/material/styles";
+import {DateField} from "@mui/x-date-pickers-pro";
+import dayjs from "dayjs";
+import TextField from "@mui/material/TextField";
 
 const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [anchorGroupBy, setAnchorGroupBy] = useState(null)
-  const [anchorFilter, setAnchorFilter] = useState(null)
-  const [dateFormat, setDateFormat] = useState(new Date())
+  const [dateFormat, setDateFormat] = useState(new Date());
+  const theme = useTheme()
+  const { direction } = theme
+  const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+  const [openFilterDialog, setOpenFilterDialog] = useState(false)
+  const handleClickFilterDialog = () => setOpenFilterDialog(true)
+  const handleCloseFilterDialog = () => setOpenFilterDialog(false)
 
   const handleSortingMenuClick = event => {
     setAnchorEl(event.currentTarget)
@@ -34,10 +51,6 @@ const Home = () => {
 
   const handleGroupByOpen = event => {
     setAnchorGroupBy(event.currentTarget)
-  }
-
-  const handleFilterOpen = event => {
-    setAnchorFilter(event.currentTarget)
   }
 
   const handleSortingClose = () => {
@@ -48,9 +61,21 @@ const Home = () => {
     setAnchorGroupBy(null);
   }
 
-  const handleFilterClose = () =>{
-    setAnchorFilter(null);
-  }
+  const contractStatus = [
+    {
+      label:'Pending',
+      value:'pending'
+    },
+    {
+      label:'Approved',
+      value:'approved'
+    }
+
+  ]
+
+  const today = dayjs();
+  const yesterday = dayjs().subtract(1, 'day');
+  const todayStartOfTheDay = today.startOf('day');
 
   return (
     <Grid container spacing={6}>
@@ -84,7 +109,7 @@ const Home = () => {
                 <Box sx={{display:'flex', gap:4}}>
                   <Button onClick={handleSortingMenuClick} variant={'contained'} startIcon={<Icon icon={'tabler:arrows-sort'} /> }>Sorting</Button>
                   <Button onClick={handleGroupByOpen} variant={'contained'} startIcon={<Icon icon={'tabler:box-multiple'} /> }>Group By</Button>
-                  <Button onClick={handleFilterOpen} variant={'contained'} startIcon={<Icon icon={'tabler:adjustments-alt'} /> }>Filtering</Button>
+                  <Button onClick={handleClickFilterDialog} variant={'contained'} startIcon={<Icon icon={'tabler:adjustments-alt'} /> }>Filtering</Button>
 
                 </Box>
 
@@ -149,6 +174,56 @@ const Home = () => {
                   <ListItemText primary='By Contract Status' />
                 </MenuItem>
               </Menu>
+
+              {/*filter dialog*/}
+              <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog} aria-labelledby='form-dialog-title'>
+                <DialogTitle id='form-dialog-title'>Filter Contract</DialogTitle>
+                <DialogContent>
+                  <DialogContentText sx={{ mb: 3 }}>
+                    There are two options to filter out, filter by date and filter by contract status,
+                    click on either of both and start filtering
+                  </DialogContentText>
+
+                  <DialogContent>
+                    <Box sx={{display:'flex'}}>
+                      <FormControl>
+                        <InputLabel id='select-status'>Select Status</InputLabel>
+                        <Select
+                          label='Contract Status'
+                          defaultValue=''
+                          id='demo-simple-select-outlined'
+                          labelId='select-status'
+                        >
+                          {
+                            contractStatus.map((status)=>(<MenuItem
+                              key={status.value}
+                              value={status.value}>{status.label}</MenuItem> ))
+                          }
+                          <MenuItem value={10}></MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </DialogContent>
+
+                </DialogContent>
+                <DialogActions className='dialog-actions-dense'>
+                  <Button
+                    onClick={handleCloseFilterDialog}
+                    sx={{backgroundColor: 'primary.main', color:'white', '&:hover':{
+                      backgroundColor:'primary.light'
+                    }
+                    }}>Filter</Button>
+                  <Button
+                    onClick={handleCloseFilterDialog}
+                    sx={{backgroundColor: 'primary.main', color:'white', '&:hover': {
+                        backgroundColor: "primary.light",
+                      }}}
+                    startIcon={<Icon icon={'tabler:x'} />}>
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
 
             </CardContent>
           </Card>

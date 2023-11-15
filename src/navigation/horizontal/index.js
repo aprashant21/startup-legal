@@ -16,12 +16,14 @@ const navigation = () => [
       },
       {
         title: 'Sign Contract',
-        icon:'tabler:email'
+        icon:'tabler:email',
+        path:'/contracts/sign'
       },
       {
         title: 'Pending Contracts',
         icon:'tabler:email'
-      }
+      },
+
     ]
   }
 ]

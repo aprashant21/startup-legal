@@ -10,11 +10,12 @@ const navigation = () => [
     icon: 'tabler:mail',
     children:[
       {
-        title: 'Sign Contract',
-        icon:'tabler:email'
+        title: 'Generate Contract',
+        icon:'tabler:email',
+        path:'/contracts/generate'
       },
       {
-        title: 'Generate Contract',
+        title: 'Sign Contract',
         icon:'tabler:email'
       },
       {

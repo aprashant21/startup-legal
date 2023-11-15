@@ -202,9 +202,6 @@ const GenerateContract = () => {
             <Grid item xs={12} sm={6}>
               <CustomTextField label="Contract End Date" type="date" fullWidth />
             </Grid>
-
-
-
           </Fragment>
         )
       default:

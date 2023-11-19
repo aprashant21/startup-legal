@@ -1,5 +1,13 @@
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
+
 const Contracts = () => {
-  return (
+  const router = useRouter();
+  useEffect(()=>{
+    router.push('/home');
+  },[])
+
+return (
     <>
       TODO this will be the contract list page
     </>
@@ -7,3 +15,5 @@ const Contracts = () => {
 }
 
 /////////////
+
+export default Contracts;

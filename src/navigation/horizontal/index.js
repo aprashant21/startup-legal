@@ -15,13 +15,9 @@ const navigation = () => [
         path:'/contracts/generate'
       },
       {
-        title: 'Sign Contract',
-        icon:'tabler:email',
-        path:'/contracts/sign'
-      },
-      {
         title: 'Pending Contracts',
-        icon:'tabler:email'
+        icon:'tabler:email',
+        path:'/contracts/pending'
       },
 
     ]

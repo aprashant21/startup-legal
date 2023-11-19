@@ -55,6 +55,8 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import store from "../store/store";
+import {Provider} from "react-redux";
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -108,6 +110,7 @@ const App = props => {
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 
+        <Provider store={store}>
         <AuthProvider>
           <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
             <SettingsConsumer>
@@ -128,6 +131,7 @@ const App = props => {
             </SettingsConsumer>
           </SettingsProvider>
         </AuthProvider>
+        </Provider>
       </CacheProvider>
 
   )

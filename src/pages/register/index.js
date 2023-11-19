@@ -32,6 +32,9 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import themeConfig from "../../configs/themeConfig";
 import MenuItem from "@mui/material/MenuItem";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -79,12 +82,27 @@ const Register = () => {
 
   // ** Hooks
   const theme = useTheme()
-  const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
+  const hidden = useMediaQuery(theme.breakpoints.down('md'));
 
-  // ** Vars
-  const { skin } = settings
-  const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
+  const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().min(5).required()
+  })
+
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
+  const onSubmit = data => {
+     console.log(data, 'hello world');
+
+  }
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
@@ -126,7 +144,7 @@ const Register = () => {
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>Contract from today with all ease and fun!</Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{display:'flex', gap:2}}>
                 <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='First Name' placeholder='john' />
                 <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='Last Name' placeholder='doe' />

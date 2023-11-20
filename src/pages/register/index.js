@@ -37,6 +37,8 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {registerUser} from "../../store/slices/auth/auth";
+import Alert from "@mui/material/Alert";
+import {Snackbar} from "@mui/material";
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -83,8 +85,14 @@ const Register = () => {
   // ** States
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const [openAlert, setOpenAlert] = useState(false);
 
-  // ** Hooks
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
   const theme = useTheme()
   const hidden = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -125,6 +133,8 @@ const Register = () => {
     console.log(data);
     dispatch(registerUser(data));
     reset();
+    setOpenAlert(true); // Open the alert
+
   }
 
   return (
@@ -337,6 +347,11 @@ const Register = () => {
           </Box>
         </Box>
       </RightWrapper>
+      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleAlertClose}>
+        <Alert onClose={()=>handleAlertClose()} severity="success">
+          User successfully added!
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

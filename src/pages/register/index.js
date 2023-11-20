@@ -78,6 +78,7 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
+
 const Register = () => {
   // ** States
   const [showPassword, setShowPassword] = useState(false);
@@ -107,21 +108,24 @@ const Register = () => {
     userType: "offerer"
   }
 
-  const onSubmit = data => {
-    console.log(data);
-    dispatch(registerUser(data));
-  }
 
   const {
     control,
     setError,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
     defaultValues:defaultValues
   })
+
+  const onSubmit = data => {
+    console.log(data);
+    dispatch(registerUser(data));
+    reset();
+  }
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>

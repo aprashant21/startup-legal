@@ -23,7 +23,7 @@ const authSlice = createSlice({
 
             const usersData = {
               userId: state.user?.uid,
-              email: "",
+              email: email,
               firstName,
               lastName,
               userType,

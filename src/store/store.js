@@ -3,8 +3,12 @@ import authSlice from "./slices/auth/auth";
 
 const store = configureStore({
   reducer: {
-    authSlice
-  }
+    [authSlice.name]:authSlice.reducer
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 });
 
 export default store;

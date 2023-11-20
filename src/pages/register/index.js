@@ -32,9 +32,11 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import themeConfig from "../../configs/themeConfig";
 import MenuItem from "@mui/material/MenuItem";
-import {useForm} from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import {useDispatch, useSelector} from "react-redux";
+import {registerUser} from "../../store/slices/auth/auth";
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -78,7 +80,8 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 
 const Register = () => {
   // ** States
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   // ** Hooks
   const theme = useTheme()
@@ -86,8 +89,28 @@ const Register = () => {
 
   const schema = yup.object().shape({
     email: yup.string().email().required(),
-    password: yup.string().min(5).required()
-  })
+    confirmEmail: yup.string().email().oneOf([yup.ref('email'), null], 'Emails must match').required('Email confirmation is required'),
+    password: yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
+    confirmPassword: yup.string().min(8, 'Password must be at least 8 characters').oneOf([yup.ref('password'), null], 'Passwords must match').required('Password confirmation is required'),
+    firstName: yup.string().required('First Name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    userType: yup.string().required('User Type is required'),
+  });
+
+  const defaultValues = {
+    confirmEmail: "",
+    confirmPassword: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    userType: "offerer"
+  }
+
+  const onSubmit = data => {
+    console.log(data);
+    dispatch(registerUser(data));
+  }
 
   const {
     control,
@@ -96,13 +119,9 @@ const Register = () => {
     formState: { errors }
   } = useForm({
     mode: 'onBlur',
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    defaultValues:defaultValues
   })
-
-  const onSubmit = data => {
-     console.log(data, 'hello world');
-
-  }
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
@@ -146,68 +165,160 @@ const Register = () => {
             </Box>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{display:'flex', gap:2}}>
-                <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='First Name' placeholder='john' />
-                <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='Last Name' placeholder='doe' />
+                <Controller
+                  control={control}
+                  name="firstName"
+                  render={({
+                             field: { onChange, onBlur, value, name, ref },
+                             fieldState: { invalid, isTouched, isDirty, error },
+                             formState,
+                           }) => (
+                    <CustomTextField
+                      autoFocus fullWidth
+                      sx={{ mb: 4 }}
+                      value={value}
+                      onChange={onChange}
+                      label='First Name'
+                      placeholder='john'
+                      error={Boolean(errors.email)}
+                      {...(errors.firstNme && { helperText: errors.firstName.message })}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      autoFocus
+                      fullWidth
+                      sx={{ mb: 4 }}
+                      label='Last Name'
+                      placeholder='doe'
+                    />
+                  )}
+                />
               </Box>
 
-              <CustomTextField select fullWidth defaultValue='' label='User Type' id='custom-select' sx={{mb:4}}>
-                <MenuItem value={10}>Offerer</MenuItem>
-                <MenuItem value={20}>Offeree</MenuItem>
-              </CustomTextField>
-
-              <CustomTextField fullWidth label='Email' sx={{ mb: 4 }} placeholder='user@email.com' />
-              <CustomTextField fullWidth label='Confirm Email' sx={{ mb: 4 }} placeholder='user@email.com' />
-
-              <CustomTextField
-                fullWidth
-                label='Password'
-                id='auth-login-v2-password'
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
+              <Controller
+                control={control}
+                name="userType"
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    select
+                    fullWidth
+                    defaultValue=''
+                    label='User Type'
+                    id='custom-select'
+                    sx={{ mb: 4 }}
+                  >
+                    <MenuItem value={'offerer'}>Offerer</MenuItem>
+                    <MenuItem value={'offeree'}>Offeree</MenuItem>
+                  </CustomTextField>
+                )}
               />
-              <CustomTextField
-                fullWidth
-                label='Confirm Password'
-                id='auth-login-v2-password'
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                sx={{mt:2}}
+
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    fullWidth
+                    label='Email'
+                    sx={{ mb: 4 }}
+                    placeholder='user@email.com'
+                  />
+                )}
               />
-              <FormControlLabel
-                control={<Checkbox />}
-                sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize } }}
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <Typography sx={{ color: 'text.secondary' }}>I agree to</Typography>
-                    <Typography component={LinkStyled} href='/' onClick={e => e.preventDefault()} sx={{ ml: 1 }}>
-                      privacy policy & terms
-                    </Typography>
-                  </Box>
-                }
+
+              <Controller
+                control={control}
+                name="confirmEmail"
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    fullWidth
+                    label='Confirm Email'
+                    sx={{ mb: 4 }}
+                    placeholder='user@email.com'
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    fullWidth
+                    label='Password'
+                    id='auth-login-v2-password'
+                    type={showPassword ? 'text' : 'password'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <CustomTextField
+                    {...field}
+                    fullWidth
+                    label='Confirm Password'
+                    id='auth-login-v2-password'
+                    type={showPassword ? 'text' : 'password'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                    sx={{ mt: 2 }}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="acceptTerms"
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={<Checkbox {...field} />}
+                    sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize } }}
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Typography sx={{ color: 'text.secondary' }}>I agree to</Typography>
+                        <Typography component={LinkStyled} href='/' onClick={e => e.preventDefault()} sx={{ ml: 1 }}>
+                          privacy policy & terms
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                )}
               />
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Sign up

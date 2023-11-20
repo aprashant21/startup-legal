@@ -1,36 +1,43 @@
 import {createSlice} from "@reduxjs/toolkit";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {firebaseAuth} from "../../../firebase/firebase";
+import {db, firebaseAuth} from "../../../firebase/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const initialState = {
   user: {},
+  message: '',
   error: {
-    errorCode: '',
-    errorMessage: ''
-  }
+    message: ''
+  },
 }
 
 const authSlice = createSlice({
   name:'auth',
   initialState,
   reducers:{
-     registerUser:  (state=initialState, action) => {
-      const {email, password } = action.payload;
-      createUserWithEmailAndPassword(firebaseAuth, email, password)
-        .then((userCredential) => {
-          state.user = userCredential.user;
-        })
-        .catch((error) => {
-          state.error.errorCode = error.code;
-          state.error.errorMessage = error.message;
-        });
+      registerUser: async (state, action) => {
+          try {
+            const {email, password, userType, firstName, lastName } = action.payload;
+            const createUser = await createUserWithEmailAndPassword(firebaseAuth, email , password);
+            state.user = await createUser.user;
+
+            const usersData = {
+              userId: state.user?.uid,
+              email: "",
+              firstName,
+              lastName,
+              userType,
+              acceptTerms: true,
+            }
+            await addDoc(collection(db, "users"), usersData);
+          }
+          catch (e){
+            state.error = e;
+          }
     },
-    resetRegisterError: (state=initialState, action) => {
-       state.error = {errorCode: '', errorMessage: ''};
-    }
   }
 })
 
-export const {registerUser, resetRegisterError} = authSlice.actions;
+export const {registerUser} = authSlice.actions;
 
 export default authSlice;

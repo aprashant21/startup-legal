@@ -54,6 +54,10 @@ const GenerateContract = () => {
   const [gameTitle, setGameTitle] = useState('');
   const [gamePlatform, setGamePlatform] = useState('');
   const [gameReleaseDate, setGameReleaseDate] = useState('');
+  const [signingBonus, setSigningBonus] = useState('');
+  const [performanceBonus, setPerformanceBonus] = useState('');
+  const [equipmentProvided, setEquipmentProvided] = useState('');
+  const [healthInsurance, setHealthInsurance] = useState('');
   const [contractTitle, setContractTitle] = useState('');
   const [contractDescription, setContractDescription] = useState('');
   const [contractStartDate, setContractStartDate] = useState('');
@@ -173,6 +177,43 @@ const GenerateContract = () => {
                 label='Release Date'
                 value={gameReleaseDate}
                 onChange={(e) => setGameReleaseDate(e.target.value)}
+              />
+            </Grid>
+            {/* New Fields */}
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                fullWidth
+                label='Signing Bonus'
+                value={signingBonus}
+                placeholder='Enter signing bonus'
+                onChange={(e) => setSigningBonus(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                fullWidth
+                label='Performance Bonus'
+                value={performanceBonus}
+                placeholder='Enter performance bonus'
+                onChange={(e) => setPerformanceBonus(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                fullWidth
+                label='Equipment Provided'
+                value={equipmentProvided}
+                placeholder='Enter equipment details'
+                onChange={(e) => setEquipmentProvided(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                fullWidth
+                label='Health Insurance'
+                value={healthInsurance}
+                placeholder='Enter health insurance details'
+                onChange={(e) => setHealthInsurance(e.target.value)}
               />
             </Grid>
           </Fragment>

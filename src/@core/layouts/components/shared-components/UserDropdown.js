@@ -19,6 +19,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Context
 import { useAuth } from 'src/hooks/useAuth'
+import {signOut} from "next-auth/react";
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -44,7 +45,6 @@ const UserDropdown = props => {
 
   // ** Hooks
   const router = useRouter()
-  const { logout } = useAuth()
 
   // ** Vars
   const { direction } = settings
@@ -76,8 +76,9 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
-    logout()
-    handleDropdownClose()
+    signOut('credentials',{redirect: false}).then(r=>{
+      handleDropdownClose();
+    })
   }
 
   return (

@@ -57,6 +57,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 import '../../styles/globals.css'
 import store from "../store/store";
 import {Provider} from "react-redux";
+import {SessionProvider} from "next-auth/react";
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -85,7 +86,7 @@ const Guard = ({ children, authGuard, guestGuard }) => {
 
 // ** Configure JSS & ClassName
 const App = props => {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const { Component, emotionCache = clientSideEmotionCache, pageProps, session } = props
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
@@ -111,17 +112,13 @@ const App = props => {
         </Head>
 
         <Provider store={store}>
-        <AuthProvider>
+          <SessionProvider session={session}>
           <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
             <SettingsConsumer>
               {({ settings }) => {
                 return (
                   <ThemeComponent settings={settings}>
-                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                      <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
-                        {getLayout(<Component {...pageProps} />)}
-                      </AclGuard>
-                    </Guard>
+                    {getLayout(<Component {...pageProps} />)}
                     <ReactHotToast>
                       <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
                     </ReactHotToast>
@@ -130,7 +127,7 @@ const App = props => {
               }}
             </SettingsConsumer>
           </SettingsProvider>
-        </AuthProvider>
+          </SessionProvider>
         </Provider>
       </CacheProvider>
 

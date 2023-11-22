@@ -41,6 +41,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import {signIn} from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -114,14 +116,19 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = data => {
+  const router = useRouter();
+
+  const onSubmit =  data => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      })
-    })
+    signIn('credentials', {email, password, redirect:false}).then(res => {
+      if (res.error == null) {
+        router.push('/home')
+      }
+      else {
+        console.error(res.error);
+      }
+    }).catch(error=>console.log(error))
+
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 

@@ -33,6 +33,7 @@ import {useTheme} from "@mui/material/styles";
 import {DateField} from "@mui/x-date-pickers-pro";
 import dayjs from "dayjs";
 import TextField from "@mui/material/TextField";
+import {useSession} from "next-auth/react";
 
 const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -43,7 +44,8 @@ const Home = () => {
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const [openFilterDialog, setOpenFilterDialog] = useState(false)
   const handleClickFilterDialog = () => setOpenFilterDialog(true)
-  const handleCloseFilterDialog = () => setOpenFilterDialog(false)
+  const handleCloseFilterDialog = () => setOpenFilterDialog(false);
+  const {data:session} = useSession();
 
   const handleSortingMenuClick = event => {
     setAnchorEl(event.currentTarget)
@@ -76,6 +78,7 @@ const Home = () => {
   const today = dayjs();
   const yesterday = dayjs().subtract(1, 'day');
   const todayStartOfTheDay = today.startOf('day');
+
 
   return (
     <Grid container spacing={6}>

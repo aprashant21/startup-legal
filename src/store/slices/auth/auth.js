@@ -34,7 +34,7 @@ const authSlice = createSlice({
           catch (e){
             state.error = e;
           }
-    },
+    }
   }
 })
 

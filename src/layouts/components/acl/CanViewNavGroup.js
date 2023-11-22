@@ -3,10 +3,12 @@ import { useContext } from 'react'
 
 // ** Component Imports
 import { AbilityContext } from 'src/layouts/components/acl/Can'
+import {useSession} from "next-auth/react";
 
 const CanViewNavGroup = props => {
   // ** Props
   const { children, navGroup } = props
+  const {data:session} = useSession();
 
   // ** Hook
   const ability = useContext(AbilityContext)
@@ -29,7 +31,7 @@ const CanViewNavGroup = props => {
 
     return ability && ability.can(item.action, item.subject) && hasAnyVisibleChild
   }
-  if (navGroup && navGroup.auth === false) {
+  if (navGroup ) {
     return <>{children}</>
   } else {
     return navGroup && canViewMenuGroup(navGroup) ? <>{children}</> : null

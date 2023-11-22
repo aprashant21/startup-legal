@@ -1,92 +1,91 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useRouter } from 'next/router'
-import {contracts} from "../../../../utils/contracts";
+import { contracts } from "../../../../utils/contracts";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import SignatureCanvas from "react-signature-canvas";
 import Button from "@mui/material/Button";
-import {Icon} from "@iconify/react";
-import {useEffect, useState} from "react";
+import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
 
-const SingleContractSign = () =>{
+const SingleContractSign = () => {
   const router = useRouter();
   const [contract, setContract] = useState(null);
 
-  useEffect(()=>{
-    //filtering specific contracts
-    const contract  = contracts.find((a)=>a.id.toString() === router.query.id);
-    setContract(contract);
-  },[contracts])
+  useEffect(() => {
+    // Filtering specific contracts
+    const selectedContract = contracts.find((c) => c.id.toString() === router.query.id);
+    setContract(selectedContract);
+  }, [contracts])
 
   return (
     <Box>
       <Card>
         <CardHeader
-          title={<Typography variant={'h4'}>Signing Contract </Typography>}
+          title={<Typography variant={'h4'}>Gaming Contract Signing</Typography>}
         />
         <CardContent>
-          <Typography variant={'h5'} fontWeight={400}>Contact Info</Typography>
-          <Box sx={{mt:2}}>
-            <Box sx={{display:'flex', gap:2}}>
+          <Typography variant={'h5'} fontWeight={400}>Player Info</Typography>
+          <Box sx={{ mt: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <strong>
-                Full Name :
+                Player Name:
               </strong>
-              <Typography> John Doe </Typography>
+              <Typography>John Doe</Typography>
             </Box>
-            <Box sx={{display:'flex', gap:2}}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <strong>
-                Mobile Number :
+                Mobile Number:
               </strong>
-              <Typography> +44 7911 123456 </Typography>
+              <Typography>+44 7911 123456</Typography>
             </Box>
-            <Box sx={{display:'flex', gap:2}}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <strong>
-                Email :
+                Email:
               </strong>
-              <Typography> harry@contract.com </Typography>
+              <Typography>john.doe@example.com</Typography>
             </Box>
           </Box>
 
-          <Typography variant={'h5'} mt={6}>Contract Details</Typography>
-          <Box sx={{mt: 2, display:'flex', gap:2, alignItems: 'center'}}>
-            <strong>Contract Title: </strong>
-            <Typography variant={''}> {contract?.title} </Typography>
+          <Typography variant={'h5'} mt={6}>Game Contract Details</Typography>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <strong>Game Title: </strong>
+            <Typography>{contract?.title}</Typography>
           </Box>
-          <Box sx={{mt:2}}>
+          <Box sx={{ mt: 2 }}>
             <Typography variant="body1">
-              <strong>Start Date:</strong>  {contract?.date}
+              <strong>Start Date:</strong> {contract?.startDate ?? '2023-12-01'}
             </Typography>
             <Typography variant="body1">
-              <strong>End Date:</strong> {contract?.date}
+              <strong>End Date:</strong> {contract?.endDate ?? '2023-12-01'}
             </Typography>
           </Box>
 
           {/* Signature Section */}
-          <Typography variant="h5" align="left" gutterBottom sx={{mt:6}}>
+          <Typography variant="h5" align="left" gutterBottom sx={{ mt: 6 }}>
             Electronic Signature
           </Typography>
-          <Grid container spacing={2} >
-            <Grid item xs={12} md={6} sx={{bgcolor:'#F8F8FF', mt:2, borderRadius: 2}}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6} sx={{ bgcolor: '#F8F8FF', mt: 2, borderRadius: 2 }}>
               <SignatureCanvas
                 penColor='green'
-                canvasProps={{width: 500, height: 200, className: 'sigCanvas'}} />
+                canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }} />
             </Grid>
           </Grid>
 
           {/* Action Buttons */}
-          <Grid container justifyContent="start" sx={{mt:4}}>
+          <Grid container justifyContent="start" sx={{ mt: 4 }}>
             <Grid item>
-              <Button variant="contained" color="primary" startIcon={<Icon icon={'tabler:signature'}/>}>
-                Sign Contract
+              <Button variant="contained" color="primary" startIcon={<Icon icon={'tabler:signature'} />}>
+                Sign Game Contract
               </Button>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
-
     </Box>
   );
 }
